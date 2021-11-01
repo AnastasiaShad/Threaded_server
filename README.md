@@ -11,6 +11,8 @@
 
 ![image](https://user-images.githubusercontent.com/70855182/139723335-0cc6db8a-3333-477b-a4a5-b89e58372d91.png)
 
+![image](https://user-images.githubusercontent.com/70855182/139727848-cf8ea465-d255-408b-8c81-bdbaebf34843.png)
+
 ![image](https://user-images.githubusercontent.com/70855182/139717107-9d8366f3-4dc5-46a8-b716-83f07cadc130.png)
 
 ![image](https://user-images.githubusercontent.com/70855182/139717057-39d21bcc-a31c-4c6d-8c17-49c87a5b5863.png)
@@ -21,10 +23,13 @@
 
 ![image](https://user-images.githubusercontent.com/70855182/139717510-46ad0c38-8b85-46f6-b37b-0625ef372661.png)
 
+При повторном подключении нужно ввести пароль:
+
 ![image](https://user-images.githubusercontent.com/70855182/139722226-ee845bb7-00a7-47d1-99d4-6f3cb248ce6f.png)
 
 ![image](https://user-images.githubusercontent.com/70855182/139722331-df28f636-8a21-49bd-932a-8cb97c4b819b.png)
 
+![image](https://user-images.githubusercontent.com/70855182/139724575-de180fa9-092f-41f2-b1a0-cf63491ee89c.png)
 
 3.Реализовать сервер с управляющим потоком. При создании сервера прослушивание портов происходит в отдельном потоке, а главный поток программы в это время способен принимать команды от пользователя. Необходимо реализовать следующие команды:
 
@@ -55,6 +60,8 @@
   Очистка файла идентификации.
   
   ![image](https://user-images.githubusercontent.com/70855182/139718849-7c922faf-b39f-4b77-ba81-0890efef8fa6.png)
+  
+  ![image](https://user-images.githubusercontent.com/70855182/139723741-2c89a3f8-8338-4d8e-9acb-17f62cac9e81.png)
   
   Т.к теперь файл идентификации пуст, то клиента вновь просят зарегистрироваться в системе
   
