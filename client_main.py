@@ -3,7 +3,7 @@ import socket, getpass, threading, re, os
 # значени хоста и порта по-умолчанию
 HOST = '127.0.0.1'
 # PORT = 63333
-PORT = 65432
+PORT = 64444
 file_ind = 'ind_data.txt'
 
 

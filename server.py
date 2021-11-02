@@ -8,12 +8,12 @@ class Server():
     log_inf = {1: 'Сервер начал работу', 2: 'Порт слушает', 3: 'Соединение установлено', 4: 'Получение данных',
                5: 'Клиент был отсоединен',
                6: 'Сервер был отключен', 7: 'Смена порта', 8: 'Новый клиент', 9: 'Сообщение',
-               10: 'Пауза', 11: 'Показ логов', 12: 'Очистка файла идентификации', 13:'Очистка логов', 14:'Идентификация', 15:'история сообщений', 16: 'Отображение команд',
+               10: 'Пауза', 11: 'Показ логов', 12: 'Очистка файла идентификации', 13:'Очистка логов', 14:'Идентификация', 15:'История сообщений', 16: 'Отображение команд',
                17: 'Отправка данных',
                18: 'Ввод пароля', 19:'Пользователь подключается'}
     # значения по-умолчанию
     HOST = '127.0.0.1'
-    PORT = 65432
+    PORT = 64444
     commands = ['shutdown', 'listen to', 'quit', 'stop port',
                 'show log', 'clear log', 'clear ind', 'help']
     all_help_commands = ['listen to - прослушивание порта', 'quit - отключение сервера',
@@ -116,10 +116,10 @@ class Server():
             while True:
                 command = input('Введите команду (help - список команд): ')
                 if command == 'shutdown':
-                    Server.log_text(6)
                     for n, c in Server.usern_ames:
                         Server.log_text(5)
                         c.close()
+                    Server.log_text(6)
                     raise SystemExit
                 elif command == "quit":
                     Server.log_text(6)
@@ -223,9 +223,6 @@ class UserClientThread(threading.Thread):
         if len(ClientUser.user_list) == 0:
             return UserClientThread.add_new_user(sock)
         else:
-            # уникальный инд
-
-
             # for row in ClientUser.user_list:
             #     if row[2] == user_ind:
                     # sock.send(f'Приветствую пользователя,{row[0]}'.encode('utf-8'))
@@ -234,33 +231,39 @@ class UserClientThread(threading.Thread):
             for i, row in enumerate(ClientUser.user_list):
                 sock.send('user_ind'.encode('utf-8'))
                 user_ind = sock.recv(1024).decode('utf-8')
-                Server.log_text(19)
-                if row[2] == user_ind:
-                    sock.send('name'.encode('utf-8'))
-                    name = sock.recv(1024).decode('utf-8')
-                    while True:
-                        sock.send(f'check,{row[0]}'.encode('utf-8'))
-                        passwd = sock.recv(1024).decode('utf-8')
-                        data = Server.vernam(row[3], passwd)
-                        Server.log_text(19)
-                        if data == row[1]:
+                try:
+                    if row[2] == user_ind:
+                        sock.send('name'.encode('utf-8'))
+                        name = sock.recv(1024).decode('utf-8')
+                        while row[0] != name:
+                            sock.send('name'.encode('utf-8'))
+                            name = sock.recv(1024).decode('utf-8')
+                        while True:
 
-                            # user_ind = ClientUser.user_ind()
-                            sock.send(f'Приветствую пользователя,{name},{user_ind}'.encode('utf-8'))
-                            # ClientUser.user_list[i].pop()
+                            sock.send(f'check,{row[0]}'.encode('utf-8'))
+                            passwd = sock.recv(1024).decode('utf-8')
+                            data = Server.vernam(row[3], passwd)
+                            Server.log_text(19)
+                            if data == row[1]:
+                                # user_ind = ClientUser.user_ind()
+                                sock.send(f'Приветствую пользователя,{name},{user_ind}'.encode('utf-8'))
+                                # ClientUser.user_list[i].pop()
 
-                            # ClientUser.user_list[i].append(user_ind)
-                            ClientUser.write_data_user()
-                            return name
+                                # ClientUser.user_list[i].append(user_ind)
+                                Server.log_text(19)
+                                ClientUser.write_data_user()
+                                return name
+                except:
+                    continue
             else:
                 sock.send('name'.encode('utf-8'))
                 name = sock.recv(1024).decode('utf-8')
                 sock.send(f'password,{name}'.encode('utf-8'))
                 answer = sock.recv(1024).decode('utf-8')
-                password = Server.vernam(Server.key, answer)
+                key = Server.key
+                password = Server.vernam(key, answer)
                 user_ind = ClientUser.user_ind()
                 sock.send(f'Приветствую пользователя,{name},{user_ind}'.encode('utf-8'))
-                key = Server.key
                 ClientUser.user_list.append([name, password, user_ind, key])
                 ClientUser.write_data_user()
                 Server.log_text(8)
@@ -270,8 +273,11 @@ class UserClientThread(threading.Thread):
     @staticmethod
     def s_send(mess, name):
         for name_us, conn in Server.usern_ames:
-            if name_us != name:
-                conn.send(f'{name}:{mess}'.encode('utf-8'))
+            try:
+                if name_us != name:
+                    conn.send(f'{name}:{mess}'.encode('utf-8'))
+            except:
+                continue
         with open(Server.history, 'a') as a:
             a.write(f'{name}:{mess}\n')
 
